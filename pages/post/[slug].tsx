@@ -2,7 +2,6 @@
 /** Dependencies */
 import React, { useState } from "react";
 import { GetStaticProps } from "next";
-import { Props } from "next/script";
 import PortableText from "react-portable-text";
 import { useForm, SubmitHandler } from "react-hook-form";
 
@@ -15,15 +14,19 @@ import { sanityClient, urlFor } from "../../sanity";
 /** types */
 import { IFormInput, Post } from "../../typings";
 
+interface Props {
+  post: Post;
+}
+
 function Post({ post }: Props) {
   const [submitted, setSubmitted] = useState(false);
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm<IFormInput>();
 
-  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+  const onFormSubmit: SubmitHandler<IFormInput> = async (data) => {
     await fetch("/api/createComment", {
       method: "POST",
       body: JSON.stringify(data),
@@ -94,7 +97,7 @@ function Post({ post }: Props) {
         </div>
       ) : (
         <form
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={handleSubmit(onFormSubmit)}
           className="flex flex-col p-10 my-10  max-w-2xl mx-auto mb-10"
         >
           <h3 className="text-sm text-yellow-500">Enjoyed this article?</h3>
